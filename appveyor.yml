@@ -75,6 +75,8 @@ after_build:
   # - git tag latest HEAD
   # - git push -f origin latest
 
+test: off
+
 artifacts:
   - path: ygopro-images
     name: ygopro-images-$(locale)
