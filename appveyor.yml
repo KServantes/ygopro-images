@@ -85,7 +85,7 @@ artifacts:
     name: records-$(locale)
 deploy:
   release: latest
-  description: 'Automatic buid commit $(APPVEYOR_REPO_COMMIT) $(APPVEYOR_REPO_COMMIT_TIMESTAMP)'
+  description: 'Automatic build commit $(APPVEYOR_REPO_COMMIT) $(APPVEYOR_REPO_COMMIT_TIMESTAMP)'
   provider: GitHub
   auth_token: $(access_token)
   prerelease: true
