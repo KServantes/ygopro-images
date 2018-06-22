@@ -4,27 +4,14 @@ environment:
   access_token:
       secure: dAqGTWGo387j9Kaot54scDTRWzXGb3DBVPVcOIzQhNAvSt3WCvXA6xBYIFvPH4pQ
   matrix:
-    #- locale: zh-CN
-    #- locale: ja-JP
     - locale: en-US
-    #- locale: zh-Classical
 version: '{build}'
 skip_tags: true
 clone_depth: 1
 cache:
   - C:\ProgramData\chocolatey\bin
   - C:\ProgramData\chocolatey\lib
-
-#init:
-#  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-
 install:
-  # ssh key and submodules
-  - ps: $fileContent = "-----BEGIN EC PRIVATE KEY-----`n"
-  - ps: $fileContent += $env:priv_key.Replace(' ', "`n")
-  - ps: $fileContent += "`n-----END EC PRIVATE KEY-----`n"
-  - ps: Set-Content c:\users\appveyor\.ssh\id_ecdsa $fileContent
-
   # environment and system dependency
   - choco install imagemagick.tool
   - refreshenv
