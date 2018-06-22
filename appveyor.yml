@@ -19,14 +19,15 @@ install:
   - set PATH=C:\Ruby22\bin;%PATH%;C:\MinGW\msys\1.0
 
   # generator
-  - git clone git@github.com:moecube/ygopro-images-generator.git
+  - git clone https://github.com/moecube/ygopro-images-generator.git
   - cd ygopro-images-generator
-  - git submodule update --init
-  - git clone git@github.com:moecube/magicseteditor.git -b win32
+  - rm -rf ImgGen
+  - git clone https://github.com/moecube/ImgGen.git
+  - git clone https://github.com/moecube/magicseteditor.git -b win32
   - cd ..
   - mv ygopro-images-generator/* ./
   - bundle install
-  - git clone git@github.com:moecube/ygopro-database
+  - git clone https://github.com/moecube/ygopro-database
   
   # install fonts
   - ps: '$fonts = (New-Object -ComObject Shell.Application).Namespace(0x14)'
@@ -38,7 +39,6 @@ install:
   - mkdir ygopro-images
   - bash -c "if curl -f -L -o records.json https://github.com/moecube/ygopro-images/releases/download/latest/records-$locale.json; then curl -f -L -o last.zip https://github.com/moecube/ygopro-images/releases/download/latest/ygopro-images-$locale.zip; unzip -q -d ygopro-images last.zip -x field/*; else echo {} > records.json; fi"
   - rm -rf ygopro-images\field
-  - rm -rf ygopro-images\thumbnail
 
 after_build:
   # 跑 generator 脚本，生成 mse 存档
@@ -52,17 +52,8 @@ after_build:
   - bash -c 'ls -1 ygopro-images-mse | sed -e "s/\.png$//" | xargs -I {} -P 4 magick "ygopro-images-mse/{}.png" -resize 177x254! "ygopro-images/{}.jpg"'
   # 场地背景
   - curl -L https://github.com/moecube/ygopro-images-field/archive/master.tar.gz | tar --strip-components=1 -C ygopro-images -zxf - ygopro-images-field-master/field
-  # 将 records.json 改名文带语言的文件名
-  - move records.json records-%locale%.json
+  - 7z a ygopro-images.zip pics -mx=9
 
-  # 更新 latest 的 tag
-  # - git config --global credential.helper store
-  # - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
-  # - bash -c "git tag -d latest ; exit 0"
-  # - git tag latest HEAD
-  # - git push -f origin latest
-
-test: off
 
 artifacts:
   - path: ygopro-images
@@ -70,15 +61,3 @@ artifacts:
     type: zip
   - path: records-$(locale).json
     name: records-$(locale)
-deploy:
-  release: latest
-  description: 'Automatic build commit $(APPVEYOR_REPO_COMMIT) $(APPVEYOR_REPO_COMMIT_TIMESTAMP)'
-  provider: GitHub
-  auth_token: $(access_token)
-  prerelease: true
-  force_update: true
-  on:
-    branch: master                 # release from master branch only
-
-#on_finish:
-#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
