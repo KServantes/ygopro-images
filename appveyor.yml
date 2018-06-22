@@ -4,7 +4,7 @@ environment:
   access_token:
       secure: dAqGTWGo387j9Kaot54scDTRWzXGb3DBVPVcOIzQhNAvSt3WCvXA6xBYIFvPH4pQ
   matrix:
-    - locale: zh-CN
+    #- locale: zh-CN
     #- locale: ja-JP
     - locale: en-US
     #- locale: zh-Classical
